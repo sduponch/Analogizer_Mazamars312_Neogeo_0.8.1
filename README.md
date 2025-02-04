@@ -6,7 +6,7 @@
   https://es.aliexpress.com/item/1005005002230586.html?gatewayAdapt=glo2esp
 * Analogizer v1.1.2 [30/12/2024]: Added suppport for PSX digital(SCPH1080)/DS/DS2(SCPH10010) SNAC game controllers for 1/2 players.  The PSX DS/DS2
   can be used in **Digital DPAD** mode (ignores the analog sticks, regardless of the ANALOG button setting on the controller) or in **Analog DPAD** mode (left analog stick is mapped to DPAD movements)
-* Analogizer v1.1.3 [04/02/2025]: Fixes game controls when no SNAC adapter is selected and uses the new `AnalogizerConfigurator` utility for choose the Analogizer adapter options.
+* Analogizer v1.1.3 [04/02/2025]: Fixes game controls when no SNAC adapter is selected and uses the new `AnalogizerConfigurator` utility for choose the Analogizer adapter options.Thanks to **@RomanistaSwitch** for testing the core.
 
 Adapted to Analogizer by [@RndMnkIII](https://github.com/RndMnkIII) based on **Mazamars312** Neogeo for Pocket (0.8.1) Core.
 
