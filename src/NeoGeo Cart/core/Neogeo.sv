@@ -171,7 +171,8 @@ module emu
 	output core_vsync,
     output [4:0] snac_game_cont_type,
     output [3:0] snac_cont_assignment,
-	output [3:0] analogizer_video_type
+	output [3:0] analogizer_video_type,
+	output       pocket_blank_screen
 	/*[ANALOGIZER_HOOK_END]*/
 );
 
@@ -440,9 +441,8 @@ wire [15:0] pocket_p2;
 
 always @(posedge clk_sys) begin
 	if(snac_game_cont_type == 5'h0) begin //SNAC is disabled
-					joystick_0 <= {snac_p1[15:4],p1_up,p1_down,p1_left,p1_right};
-					joystick_1 <= {snac_p2[15:4],p2_up,p2_down,p2_left,p2_right};
-
+					joystick_0 <= pocket_p1;
+					joystick_1 <= pocket_p2;
 	end
 	else begin
 		case(snac_cont_assignment)
@@ -582,7 +582,8 @@ apf_io apf_io
 	/*[ANALOGIZER_HOOK_BEGIN]*/
 	.snac_game_cont_type(snac_game_cont_type),
 	.snac_cont_assignment(snac_cont_assignment),
-	.analogizer_video_type(analogizer_video_type)
+	.analogizer_video_type(analogizer_video_type),
+	.pocket_blank_screen(pocket_blank_screen),
 	/*[ANALOGIZER_HOOK_END]*/
 );
 

@@ -149,8 +149,19 @@
 					],
 					"size_maximum": 1048576,
 					"address": "0x10800000"
+				},
+				{
+					"name": "Analogizer config",
+					"id": 330,
+					"required": false,
+					"parameters": "0x1000000",
+					"filename": "analogizer.bin",
+					"extensions": [
+						"bin"
+					],
+					"address": "0xF7000000",
+					"nonvolatile": false
 				}
-				
 			]
     }
 }

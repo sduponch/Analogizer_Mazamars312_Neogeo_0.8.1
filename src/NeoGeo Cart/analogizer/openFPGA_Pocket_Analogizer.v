@@ -170,17 +170,17 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 	); 
 
 	//Choose type of analog video type of signal
-	reg [5:0] Rout, Gout, Bout /* synthesis preserve */;
-	reg HsyncOut, VsyncOut, BLANKnOut /* synthesis preserve */;
-	wire [7:0] Yout, PrOut, PbOut /* synthesis keep */;
-	wire [7:0] R_Sd, G_Sd, B_Sd /* synthesis keep */;
-	wire Hsync_Sd, Vsync_Sd /* synthesis keep */;
-	wire Hblank_Sd, Vblank_Sd /* synthesis keep */;
-	wire BLANKn_SD = ~(Hblank_Sd || Vblank_Sd) /* synthesis keep */;
+	reg [5:0] Rout, Gout, Bout ;
+	reg HsyncOut, VsyncOut, BLANKnOut ;
+	wire [7:0] Yout, PrOut, PbOut ;
+	wire [7:0] R_Sd, G_Sd, B_Sd ;
+	wire Hsync_Sd, Vsync_Sd ;
+	wire Hblank_Sd, Vblank_Sd ;
+	wire BLANKn_SD = ~(Hblank_Sd || Vblank_Sd) ;
 
 	always @(*) begin
 		case(analog_video_type)
-			4'h0, 4'h8: begin //RGBS
+			4'h0: begin //RGBS
 				Rout = R[7:2]&{6{BLANKn}};
 				Gout = G[7:2]&{6{BLANKn}};
 				Bout = B[7:2]&{6{BLANKn}};
@@ -188,7 +188,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = 1'b1;
 				BLANKnOut = BLANKn;
 			end
-			4'h3, 4'h4, 4'hB, 4'hC: begin// Y/C Modes works for Analogizer R1, R2 Adapters
+			4'h3, 4'h4: begin// Y/C Modes works for Analogizer R1, R2 Adapters
 				Rout = yc_o[23:18];
 				Gout = yc_o[15:10];
 				Bout = yc_o[7:2];
@@ -196,7 +196,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = 1'b1;
 				BLANKnOut = 1'b1;
 			end
-			4'h1, 4'h9: begin //RGsB
+			4'h1: begin //RGsB
 				Rout = R[7:2]&{6{BLANKn}};
 				Gout = G[7:2]&{6{BLANKn}};
 				Bout = B[7:2]&{6{BLANKn}};
@@ -204,7 +204,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = Csync; //to DAC SYNC pin, SWITCH SOG ON
 				BLANKnOut = BLANKn;
 			end
-			4'h2, 4'hA: begin //YPbPr
+			4'h2: begin //YPbPr
 				Rout = PrOut[7:2];
 				Gout = Yout[7:2];
 				Bout = PbOut[7:2];
@@ -212,7 +212,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 				VsyncOut = YPbPr_sync; //to DAC SYNC pin, SWITCH SOG ON
 				BLANKnOut = 1'b1; //ADV7123 needs this
 			end
-			4'h5, 4'h6, 4'h7, 4'hD, 4'hE, 4'hF: begin //Scandoubler modes
+			4'h5, 4'h6, 4'h7, 4'h8, 4'h9: begin //Scandoubler modes
 				Rout = vga_data_sl[23:18]; //R_Sd[7:2];
 				Gout = vga_data_sl[15:10]; //G_Sd[7:2];
 				Bout = vga_data_sl[7:2]; //B_Sd[7:2];
@@ -272,9 +272,9 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.de_o(YPbPr_blank)
 	);
 
-	wire [23:0] yc_o /* synthesis keep */;
+	wire [23:0] yc_o ;
 	//wire yc_hs, yc_vs, 
-	wire yc_cs /* synthesis keep */;
+	wire yc_cs ;
 	yc_out yc_out
 	(
 		.clk(i_clk),
@@ -290,7 +290,7 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.csync_o(yc_cs)
 	);
 
-	wire ce_pix_Sd /* synthesis keep */;
+	wire ce_pix_Sd ;
 	scandoubler_2 #(.LENGTH(LINE_LENGTH), .HALF_DEPTH(0)) sd
 	(
 		.clk_vid(i_clk),
@@ -315,9 +315,9 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 		.b_out(B_Sd)
 	);
 
-	reg Hsync_SL, Vsync_SL, Hblank_SL, Vblank_SL /* synthesis preserve */;
-	reg [7:0] R_SL, G_SL, B_SL /* synthesis preserve */;
-	reg CE_PIX_SL, DE_SL /* synthesis preserve */;
+	reg Hsync_SL, Vsync_SL, Hblank_SL, Vblank_SL ;
+	reg [7:0] R_SL, G_SL, B_SL ;
+	reg CE_PIX_SL, DE_SL ;
 
 	always @(posedge video_clk) begin
 		Hsync_SL <= (scandoubler) ? Hsync_Sd : Hsync;
@@ -332,8 +332,8 @@ module openFPGA_Pocket_Analogizer #(parameter MASTER_CLK_FREQ=50_000_000, parame
 	end
 
 
-wire [23:0] vga_data_sl /* synthesis keep */;
-wire        vga_vs_sl, vga_hs_sl /* synthesis keep */;
+wire [23:0] vga_data_sl ;
+wire        vga_vs_sl, vga_hs_sl ;
 scanlines_analogizer #(0) VGA_scanlines
 (
 	.clk(video_clk),

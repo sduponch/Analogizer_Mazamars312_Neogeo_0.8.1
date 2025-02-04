@@ -6,8 +6,14 @@
   https://es.aliexpress.com/item/1005005002230586.html?gatewayAdapt=glo2esp
 * Analogizer v1.1.2 [30/12/2024]: Added suppport for PSX digital(SCPH1080)/DS/DS2(SCPH10010) SNAC game controllers for 1/2 players.  The PSX DS/DS2
   can be used in **Digital DPAD** mode (ignores the analog sticks, regardless of the ANALOG button setting on the controller) or in **Analog DPAD** mode (left analog stick is mapped to DPAD movements)
+* Analogizer v1.1.3 [04/02/2025]: Fixes game controls when no SNAC adapter is selected and uses the new `AnalogizerConfigurator` utility for choose the Analogizer adapter options.
 
 Adapted to Analogizer by [@RndMnkIII](https://github.com/RndMnkIII) based on **Mazamars312** Neogeo for Pocket (0.8.1) Core.
+
+
+This Analogizer core uses a configuration file to select Analogizer adapter options, not based on the Pocket's menu system. It is necessary to run an external utility [AnalogizerConfigurator](https://github.com/RndMnkIII/AnalogizerConfigurator)  to generate such a file. Once generated, you must copy the `analogizer.bin` file to the `/Assets/analogizer/common` folder on the Pocket SD card. If this folder does not exist, you must create it or if you have already extracted the Amiga core distribution file it will be created. Check the refered utility for the relevant options for the Analogizer adapter: SNAC controller, SNAC controller assigments (how to map physical SNAC game controllers to the Pocket openFPGA framework PAD format), Video output and Blank the Pocket Screen (On/Off).
+
+This utility allows you to do a few things beyond the usual SNAC controller type and assignment, or video output type and blank of the Pocket screen.
 
 The core can output RGBS, RGsB, YPbPr, Y/C and SVGA scandoubler (50% scanlines) video signals.
 | Video output | Status | SOG Switch(Only R2,R3 Analogizer) |
@@ -46,20 +52,12 @@ Be careful when handling this switch. Use something with a thin, flat tip such a
    B|  O|A  A/B switch on position A
      ---
 ``` 
-The following options exist in the core menu to configure Analogizer:
-* **SNAC Adapter** List: None, DB15,NES,SNES,PCE,PCE Multitap, SNES swap A,B<->X,Y buttons, PSX (Digital DPAD), PSX (Analog DPAD).
-* **SNAC Controller Assignment** List: several options about how to map SNAC controllers to P1-P4 Pocket controls. The controls not mapped to SNAC by default will map to Pocket connected controllers (Pocket built-in or Dock).
-* **Analogizer Video Out** List: you can choose between RGBS (VGA to SCART), RGsB (works is a PVM as YPbPr but using RGB color space), YPbPr (for TV with component video input),
-Y/C NTSC or PAL (for SVideo o compositive video using Y/C Active adapter by Mike S11), RGBHV for SVGA monitor Scandouble video output.
 
 * **Analogizer** is responsible for generating the correct encoded Y/C signals from RGB and outputs to R,G pins of VGA port. Also redirects the CSync to VGA HSync pin.
 The required external Y/C adapter that connects to VGA port is responsible for output Svideo o composite video signal using his internal electronics. Oficially
 only the Mike Simone Y/C adapters (active) designs will be supported by Analogizer and will be the ones to use.
 However, depending on the type of screen you have, passive Y/C adapters could work with different degrees of success.
 
-For output Y/C and composite video you need to select in Pocket's Menu: `Analogizer Video Out > Y/C` or `Analogizer Video Out > Y/C,Pocket OFF`.
-
-For output Scandoubler SVGA video you need to select in Pocket's Menu: `Analogizer Video Out > Scandoubler RGBHV` or `Analogizer Video Out > Scandoubler,Pocket OFF`.
 
 You will need to connect an active VGA to Y/C adapter to the VGA port (the 5V power is provided by VGA pin 9). I'll recomend one of these (active):
 * [MiSTerAddons - Active Y/C Adapter](https://misteraddons.com/collections/parts/products/yc-active-encoder-board/)

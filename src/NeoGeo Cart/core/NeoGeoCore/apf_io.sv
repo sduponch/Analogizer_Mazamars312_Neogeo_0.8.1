@@ -202,7 +202,8 @@ module apf_io
 	/*[ANALOGIZER_HOOK_BEGIN]*/
     output [4:0] snac_game_cont_type,
     output [3:0] snac_cont_assignment,
-	output [3:0] analogizer_video_type
+	output [3:0] analogizer_video_type,
+	output       pocket_blank_screen
 
 	/*[ANALOGIZER_HOOK_END]*/
 
@@ -606,7 +607,7 @@ reg			Core_reset;
 reg [25:0]	Core_reset_counter;	
 reg			system_change;
 reg			overclock_change;		
-reg [13:0] analogizer_settings;
+reg [31:0] analogizer_settings;
 	
 // APF write access over the 32bit address system and setup of the core
 always @(posedge clk_74a or negedge reset_l_main) begin
@@ -641,7 +642,7 @@ always @(posedge clk_74a or negedge reset_l_main) begin
 		system_change			<= 'b0;
 		CPU_overclock			<= 'b0;
 		/*[ANALOGIZER_HOOK_BEGIN]*/
-		analogizer_settings <= 14'h0000;
+		analogizer_settings <= 32'h00000000;
 		/*[ANALOGIZER_HOOK_END]*/
 	end
 	else begin
@@ -722,7 +723,7 @@ always @(posedge clk_74a or negedge reset_l_main) begin
 				32'hF0000410 : cart_chip				<= bridge_wr_data;
 				
 				/*[ANALOGIZER_HOOK_BEGIN]*/
-				32'hF7000000 : analogizer_settings  <=  bridge_wr_data[13:0];
+				32'hF7000000 : analogizer_settings  <=  {bridge_wr_data[7:0],bridge_wr_data[15:8],bridge_wr_data[23:16],bridge_wr_data[31:24]}; //read inverted byte order
 				/*[ANALOGIZER_HOOK_END]*/
 
 
@@ -788,7 +789,7 @@ always @(*) begin
 	end
 	/*[ANALOGIZER_HOOK_BEGIN]*/
 	32'hF7xxxxxx: begin
-		bridge_rd_data 	<= {18'h0,analogizer_settings};
+		bridge_rd_data 	<= {analogizer_settings_s[7:0],analogizer_settings_s[15:8],analogizer_settings_s[23:16],analogizer_settings_s[31:24]}; //invert byte order to writeback to the Sav folders
 	end
 	/*[ANALOGIZER_HOOK_END]*/
 	32'hF8xxxxxx: begin
@@ -801,14 +802,15 @@ always @(*) begin
 end
 
 /*[ANALOGIZER_HOOK_BEGIN]*/
-wire [13:0] analogizer_settings_s;
+wire [31:0] analogizer_settings_s;
 
-synch_3 #(.WIDTH(14)) sync_analogizer(analogizer_settings, analogizer_settings_s, clk_sys);
+synch_3 #(.WIDTH(32)) sync_analogizer(analogizer_settings, analogizer_settings_s, clk_sys);
 
 always_comb begin
   snac_game_cont_type   = analogizer_settings_s[4:0];
   snac_cont_assignment  = analogizer_settings_s[9:6];
   analogizer_video_type = analogizer_settings_s[13:10];
+  pocket_blank_screen   = analogizer_settings_s[14];
 end
 /*[ANALOGIZER_HOOK_END]*/
 

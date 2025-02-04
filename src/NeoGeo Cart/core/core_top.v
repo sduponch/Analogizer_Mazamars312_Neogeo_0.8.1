@@ -325,7 +325,8 @@ emu Neogeo
 	.core_vsync(core_vsync),
 	.snac_game_cont_type(snac_game_cont_type),
 	.snac_cont_assignment(snac_cont_assignment),
-	.analogizer_video_type(analogizer_video_type)
+	.analogizer_video_type(analogizer_video_type),
+	.pocket_blank_screen(pocket_blank_screen)
 	/*[ANALOGIZER_HOOK_END]*/
 );
 
@@ -346,12 +347,13 @@ wire  SYNC = ~^{core_hsync, core_vsync};
 	wire [15:0] PLAYER2;
 
 //Pocket Screen Blanking Control
-assign video_rgb = analogizer_video_type[3] ? 24'h000 : video_rgb2;
+assign video_rgb = pocket_blank_screen ? 24'h000 : video_rgb2;
 //*** Analogizer Interface V1.0 ***
 wire analogizer_ena;
 wire [3:0] analogizer_video_type;
 wire [4:0] snac_game_cont_type /* synthesis keep */;
 wire [3:0] snac_cont_assignment /* synthesis keep */;
+wire pocket_blank_screen;
 
 
 wire [15:0] p1_btn;

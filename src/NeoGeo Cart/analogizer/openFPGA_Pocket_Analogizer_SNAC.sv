@@ -104,16 +104,16 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
     output wire o_stb
 ); 
     //
-    logic SNAC_OUT1 /* synthesis preserve */; //cart_tran_bank1[6]                                           D-
-    logic SNAC_OUT2 /* synthesis preserve */; //cart_tran_bank1[7]                                           D+
-    logic SNAC_IO3_A /* synthesis preserve */;//Conf.A: cart_tran_bank0[4] (in),  Conf.B: pin30(out)         RX- 
-    logic SNAC_IO3_B /* synthesis preserve */;//Conf.B: cart_tran_bank0[4] (in),  Conf.B: pin30(out)         RX-
-    logic SNAC_IN4 /* synthesis preserve */;  //cart_tran_bank0[7]                                           RX+
-    logic SNAC_IO5_A /* synthesis preserve */;//Conf.A: pin30(out),               Conf.B: cart_tran_bank1[6] GND_D
-	 logic SNAC_IO5_B /* synthesis preserve */;//Conf.A: pin30(out),               Conf.B: cart_tran_bank1[6] GND_D
-    logic SNAC_IO6_A /* synthesis preserve */;//Conf.A: pin31(in),                Conf.B: pin31(out)         TX-
-    logic SNAC_IO6_B /* synthesis preserve */;//Conf.A: pin31(in),                Conf.B: pin31(out)         TX-
-    logic SNAC_IN7 /* synthesis preserve */;   //cart_tran_bank0[5]                                          TX+
+    logic SNAC_OUT1 ; //cart_tran_bank1[6]                                           D-
+    logic SNAC_OUT2 ; //cart_tran_bank1[7]                                           D+
+    logic SNAC_IO3_A ;//Conf.A: cart_tran_bank0[4] (in),  Conf.B: pin30(out)         RX- 
+    logic SNAC_IO3_B ;//Conf.B: cart_tran_bank0[4] (in),  Conf.B: pin30(out)         RX-
+    logic SNAC_IN4 ;  //cart_tran_bank0[7]                                           RX+
+    logic SNAC_IO5_A ;//Conf.A: pin30(out),               Conf.B: cart_tran_bank1[6] GND_D
+	 logic SNAC_IO5_B ;//Conf.A: pin30(out),               Conf.B: cart_tran_bank1[6] GND_D
+    logic SNAC_IO6_A ;//Conf.A: pin31(in),                Conf.B: pin31(out)         TX-
+    logic SNAC_IO6_B ;//Conf.A: pin31(in),                Conf.B: pin31(out)         TX-
+    logic SNAC_IN7 ;   //cart_tran_bank0[5]                                          TX+
     
     //calculate step sizes for fract clock enables
     // localparam pce_compat_polling_freq    =  20_000; //  20_000 / 5 =   4K samples/sec PCE
@@ -310,7 +310,7 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
         endcase
     end
                                                
-    wire stb_clk /* synthesis keep */;
+    wire stb_clk ;
     clock_divider_fract ckdiv(
     .i_clk (i_clk),
     .i_rst(reset_on_change), //reset on polling freq change
@@ -334,8 +334,8 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
     //PSX game controller for 1/2 players
     wire [15:0] psx_key1, psx_key2;
     wire [31:0] psx_joy1, psx_joy2;
-    wire PSX_SNAC_OUT1 /* synthesis keep */;
-    wire PSX_SNAC_OUT2 /* synthesis keep */;
+    wire PSX_SNAC_OUT1 ;
+    wire PSX_SNAC_OUT2 ;
     analogizer_psx #(.MASTER_CLK_FREQ(MASTER_CLK_FREQ)) psx (
         .i_clk(i_clk),
         .i_rst(reset_on_change),
@@ -359,11 +359,11 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
     //assign PSX_SNAC_OUT2 = 1'b1;
 
     //DB15/NES/SNES game controller
-    wire [15:0] sl_p1 /* synthesis keep */;
-    wire [15:0] sl_p2 /* synthesis keep */;
-    wire SERLAT_SNAC_OUT1 /* synthesis keep */;
-    wire SERLAT_SNAC_OUT2 /* synthesis keep */;
-    //wire SERLAT_SNAC_IO5_A /* synthesis keep */;
+    wire [15:0] sl_p1 ;
+    wire [15:0] sl_p2 ;
+    wire SERLAT_SNAC_OUT1 ;
+    wire SERLAT_SNAC_OUT2 ;
+    //wire SERLAT_SNAC_IO5_A ;
     serlatch_game_controller #(.MASTER_CLK_FREQ(MASTER_CLK_FREQ)) slgc
     (
         .i_clk(i_clk),
@@ -382,9 +382,9 @@ module openFPGA_Pocket_Analogizer_SNAC #(parameter MASTER_CLK_FREQ=50_000_000)
     );
 
     //PCENGINE game controller
-    wire [15:0] pce_p1 /* synthesis keep */;
-    wire PCE_SNAC_OUT1 /* synthesis keep */;
-    wire PCE_SNAC_OUT2 /* synthesis keep */;
+    wire [15:0] pce_p1 ;
+    wire PCE_SNAC_OUT1 ;
+    wire PCE_SNAC_OUT2 ;
 
     pcengine_game_controller #(.MASTER_CLK_FREQ(MASTER_CLK_FREQ), .PULSE_CLR_LINE(1'b1)) pcegc1
     (
